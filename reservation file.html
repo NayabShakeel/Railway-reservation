@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Railway Reservation System</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @keyframes trainMove {
+            0% { left: -500px; }
+            100% { left: 100%; }
+        }
+        
+        @keyframes smoke {
+            0% { transform: translateY(0) scale(1); opacity: 1; }
+            100% { transform: translateY(-100px) scale(3); opacity: 0; }
+        }
+        
+        .train-animation {
+            animation: trainMove 20s linear infinite;
+        }
+        
+        .smoke {
+            position: absolute;
+            background: rgba(255, 255, 255, 0.7);
+            border-radius: 50%;
+            animation: smoke 3s linear infinite;
+        }
+        
+        .glow-on-hover {
+            transition: all 0.3s ease;
+        }
+        
+        .glow-on-hover:hover {
+            box-shadow: 0 0 15px rgba(59, 130, 246, 0.8);
+            transform: translateY(-2px);
+        }
+        
+        .foggy-bg {
+            background: linear-gradient(135deg, #4b6cb7 0%, #182848 100%);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .fog {
+            position: absolute;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            filter: blur(5px);
+        }
+        
+        .sidebar-transition {
+            transition: all 0.3s ease;
+        }
+        
+        .card-glow {
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+        
+        .card-glow:hover {
+            box-shadow: 0 8px 30px rgba(59, 130, 246, 0.3);
+            transform: translateY(-5px);
+        }
+        
+        .pulse {
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(59, 130, 246, 0.7); }
+            70% { box-shadow: 0 0 0 10px rgba(59, 130, 246, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(59, 130, 246, 0); }
+        }
+    </style>
+</head>
+<body class="foggy-bg min-h-screen text-gray-100">
+    <!-- Background elements -->
+    <div id="fog-container"></div>
+    <div class="fixed bottom-10 w-full h-40">
+        <div class="train-animation relative">
+            <div class="absolute flex items-end" style="bottom: 0;">
+                <!-- Train engine -->
+                <div class="w-40 h-20 bg-red-700 rounded-lg relative">
+                    <div class="absolute -top-6 left-4 w-12 h-6 bg-gray-800 rounded-t-full"></div>
+                    <div class="absolute top-0 right-4 w-8 h-8 bg-yellow-400 rounded-full"></div>
+                    <div class="absolute top-2 right-6 w-4 h-4 bg-gray-900 rounded-full"></div>
+                    <!-- Chimney -->
+                    <div class="absolute -top-10 left-16 w-6 h-10 bg-gray-800 rounded-t-sm">
+                        <div id="smoke-1" class="smoke" style="left: 3px; width: 10px; height: 10px;"></div>
+                        <div id="smoke-2" class="smoke" style="left: 3px; width: 8px; height: 8px; animation-delay: 0.5s;"></div>
+                        <div id="smoke-3" class="smoke" style="left: 3px; width: 6px; height: 6px; animation-delay: 1s;"></div>
+                    </div>
+                </div>
+                <!-- Train cars -->
+                <div class="w-32 h-16 bg-blue-700 rounded-lg ml-2"></div>
+                <div class="w-32 h-16 bg-green-700 rounded-lg ml-2"></div>
+                <div class="w-32 h-16 bg-purple-700 rounded-lg ml-2"></div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Main container -->
+    <div class="container mx-auto px-4 py-8 relative z-10">
+        <div class="flex">
+            <!-- Sidebar -->
+            <div id="sidebar" class="sidebar-transition w-64 bg-gray-800 bg-opacity-90 rounded-lg shadow-lg p-4 mr-6 h-auto">
+                <div class="flex items-center justify-between mb-8">
+                    <h2 class="text-xl font-bold text-white">Railway System</h2>
+                    <button id="sidebar-toggle" class="text-gray-400 hover:text-white">
+                        <i class="fas fa-bars"></i>
+                    </button>
+                </div>
+                <nav>
+                    <ul class="space-y-2">
+                        <li>
+                            <a href="#" class="flex items-center p-2 text-white bg-blue-600 rounded-lg hover:bg-blue-700 transition">
+                                <i class="fas fa-home mr-3"></i>
+                                <span>Dashboard</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#" class="flex items-center p-2 text-gray-300 hover:text-white hover:bg-gray-700 rounded-lg transition">
+                                <i class="fas fa-ticket-alt mr-3"></i>
+                                <span>Book Tickets</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#" class="flex items-center p-2 text-gray-300 hover:text-white hover:bg-gray-700 rounded-lg transition">
+                                <i class="fas fa-train mr-3"></i>
+                                <span>Train Schedule</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#" class="flex items-center p-2 text-gray-300 hover:text-white hover:bg-gray-700 rounded-lg transition">
+                                <i class="fas fa-receipt mr-3"></i>
+                                <span>My Bookings</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#" class="flex items-center p-2 text-gray-300 hover:text-white hover:bg-gray-700 rounded-lg transition">
+                                <i class="fas fa-user mr-3"></i>
+                                <span>Profile</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#" class="flex items-center p-2 text-gray-300 hover:text-white hover:bg-gray-700 rounded-lg transition">
+                                <i class="fas fa-cog mr-3"></i>
+                                <span>Settings</span>
+                            </a>
+                        </li>
+                    </ul>
+                </nav>
+                <div class="mt-8 pt-4 border-t border-gray-700">
+                    <div class="flex items-center">
+                        <img class="w-10 h-10 rounded-full" src="https://randomuser.me/api/portraits/men/32.jpg" alt="User">
+                        <div class="ml-3">
+                            <p class="text-sm font-medium text-white">John Doe</p>
+                            <p class="text-xs text-gray-400">Premium Member</p>
+                        </div>
+                    </div>
+                    <button class="mt-4 w-full py-2 px-4 bg-red-600 hover:bg-red-700 text-white rounded-lg transition">
+                        Logout
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Main content -->
+            <div class="flex-1">
+                <header class="bg-gray-800 bg-opacity-90 rounded-lg shadow-lg p-6 mb-6">
+                    <h1 class="text-3xl font-bold text-white mb-2">Railway Reservation System</h1>
+                    <p class="text-gray-300">Book your train tickets with ease and comfort</p>
+                </header>
+                
+                <!-- Booking card -->
+                <div class="card-glow bg-gray-800 bg-opacity-90 rounded-lg shadow-lg p-6 mb-6">
+                    <h2 class="text-2xl font-bold text-white mb-6">Book Your Journey</h2>
+                    
+                    <form>
+                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+                            <div>
+                                <label class="block text-gray-300 mb-2">From</label>
+                                <div class="relative">
+                                    <select class="w-full bg-gray-700 border border-gray-600 rounded-lg py-3 px-4 text-white appearance-none focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                        <option>Select Station</option>
+                                        <option>New York</option>
+                                        <option>Chicago</option>
+                                        <option>Los Angeles</option>
+                                        <option>Boston</option>
+                                        <option>Washington DC</option>
+                                    </select>
+                                    <div class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
+                                        <i class="fas fa-chevron-down text-gray-400"></i>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div>
+                                <label class="block text-gray-300 mb-2">To</label>
+                                <div class="relative">
+                                    <select class="w-full bg-gray-700 border border-gray-600 rounded-lg py-3 px-4 text-white appearance-none focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                        <option>Select Station</option>
+                                        <option>New York</option>
+                                        <option>Chicago</option>
+                                        <option>Los Angeles</option>
+                                        <option>Boston</option>
+                                        <option>Washington DC</option>
+                                    </select>
+                                    <div class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
+                                        <i class="fas fa-chevron-down text-gray-400"></i>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div>
+                                <label class="block text-gray-300 mb-2">Departure</label>
+                                <input type="date" class="w-full bg-gray-700 border border-gray-600 rounded-lg py-3 px-4 text-white focus:outline-none focus:ring-2 focus:ring-blue-500">
+                            </div>
+                            
+                            <div>
+                                <label class="block text-gray-300 mb-2">Class</label>
+                                <div class="relative">
+                                    <select class="w-full bg-gray-700 border border-gray-600 rounded-lg py-3 px-4 text-white appearance-none focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                        <option>Select Class</option>
+                                        <option>Economy</option>
+                                        <option>Business</option>
+                                        <option>First Class</option>
+                                        <option>Sleeper</option>
+                                    </select>
+                                    <div class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
+                                        <i class="fas fa-chevron-down text-gray-400"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="flex justify-center">
+                            <button class="glow-on-hover bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-8 rounded-lg flex items-center pulse">
+                                <i class="fas fa-search mr-2"></i>
+                                Search Trains
+                            </button>
+                        </div>
+                    </form>
+                </div>
+                
+                <!-- Available trains -->
+                <div class="card-glow bg-gray-800 bg-opacity-90 rounded-lg shadow-lg p-6">
+                    <h2 class="text-2xl font-bold text-white mb-6">Available Trains</h2>
+                    
+                    <div class="space-y-4">
+                        <!-- Train 1 -->
+                        <div class="bg-gray-700 rounded-lg p-4 hover:bg-gray-600 transition cursor-pointer">
+                            <div class="flex flex-col md:flex-row md:items-center justify-between">
+                                <div class="mb-4 md:mb-0">
+                                    <h3 class="text-xl font-bold text-white">Express 202</h3>
+                                    <p class="text-gray-300">New York → Chicago</p>
+                                </div>
+                                <div class="flex items-center space-x-4">
+                                    <div class="text-center">
+                                        <p class="text-white font-bold">08:00</p>
+                                        <p class="text-gray-400 text-sm">Departure</p>
+                                    </div>
+                                    <div class="text-gray-400">
+                                        <i class="fas fa-arrow-right"></i>
+                                    </div>
+                                    <div class="text-center">
+                                        <p class="text-white font-bold">16:30</p>
+                                        <p class="text-gray-400 text-sm">Arrival</p>
+                                    </div>
+                                    <div class="text-center">
+                                        <p class="text-white font-bold">8h 30m</p>
+                                        <p class="text-gray-400 text-sm">Duration</p>
+                                    </div>
+                                    <div class="bg-green-100 text-green-800 px-3 py-1 rounded-full text-sm font-medium">
+                                        Available
+                                    </div>
+                                    <button class="glow-on-hover bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded-lg transition">
+                                        Book Now
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Train 2 -->
+                        <div class="bg-gray-700 rounded-lg p-4 hover:bg-gray-600 transition cursor-pointer">
+                            <div class="flex flex-col md:flex-row md:items-center justify-between">
+                                <div class="mb-4 md:mb-0">
+                                    <h3 class="text-xl font-bold text-white">Coastal 505</h3>
+                                    <p class="text-gray-300">Los Angeles → San Francisco</p>
+                                </div>
+                                <div class="flex items-center space-x-4">
+                                    <div class="text-center">
+                                        <p class="text-white font-bold">10:15</p>
+                                        <p class="text-gray-400 text-sm">Departure</p>
+                                    </div>
+                                    <div class="text-gray-400">
+                                        <i class="fas fa-arrow-right"></i>
+                                    </div>
+                                    <div class="text-center">
+                                        <p class="text-white font-bold">14:45</p>
+                                        <p class="text-gray-400 text-sm">Arrival</p>
+                                    </div>
+                                    <div class="text-center">
+                                        <p class="text-white font-bold">4h 30m</p>
+                                        <p class="text-gray-400 text-sm">Duration</p>
+                                    </div>
+                                    <div class="bg-yellow-100 text-yellow-800 px-3 py-1 rounded-full text-sm font-medium">
+                                        Limited
+                                    </div>
+                                    <button class="glow-on-hover bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded-lg transition">
+                                        Book Now
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Train 3 -->
+                        <div class="bg-gray-700 rounded-lg p-4 hover:bg-gray-600 transition cursor-pointer">
+                            <div class="flex flex-col md:flex-row md:items-center justify-between">
+                                <div class="mb-4 md:mb-0">
+                                    <h3 class="text-xl font-bold text-white">Northeast 101</h3>
+                                    <p class="text-gray-300">Boston → Washington DC</p>
+                                </div>
+                                <div class="flex items-center space-x-4">
+                                    <div class="text-center">
+                                        <p class="text-white font-bold">07:30</p>
+                                        <p class="text-gray-400 text-sm">Departure</p>
+                                    </div>
+                                    <div class="text-gray-400">
+                                        <i class="fas fa-arrow-right"></i>
+                                    </div>
+                                    <div class="text-center">
+                                        <p class="text-white font-bold">12:15</p>
+                                        <p class="text-gray-400 text-sm">Arrival</p>
+                                    </div>
+                                    <div class="text-center">
+                                        <p class="text-white font-bold">4h 45m</p>
+                                        <p class="text-gray-400 text-sm">Duration</p>
+                                    </div>
+                                    <div class="bg-red-100 text-red-800 px-3 py-1 rounded-full text-sm font-medium">
+                                        Waitlist
+                                    </div>
+                                    <button class="glow-on-hover bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded-lg transition">
+                                        Book Now
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Create fog/mist effect
+        function createFog() {
+            const fogContainer = document.getElementById('fog-container');
+            fogContainer.innerHTML = '';
+            
+            for (let i = 0; i < 20; i++) {
+                const fog = document.createElement('div');
+                fog.className = 'fog';
+                
+                // Random size
+                const size = Math.random() * 200 + 50;
+                fog.style.width = `${size}px`;
+                fog.style.height = `${size}px`;
+                
+                // Random position
+                fog.style.left = `${Math.random() * 100}%`;
+                fog.style.top = `${Math.random() * 100}%`;
+                
+                // Random animation
+                fog.style.animation = `moveFog ${Math.random() * 30 + 30}s linear infinite`;
+                fog.style.animationDelay = `${Math.random() * 10}s`;
+                
+                fogContainer.appendChild(fog);
+            }
+            
+            // Add CSS for fog movement
+            const style = document.createElement('style');
+            style.innerHTML = `
+                @keyframes moveFog {
+                    0% { transform: translateX(0) translateY(0); }
+                    50% { transform: translateX(${Math.random() * 200 - 100}px) translateY(${Math.random() * 100 - 50}px); }
+                    100% { transform: translateX(0) translateY(0); }
+                }
+            `;
+            document.head.appendChild(style);
+        }
+        
+        // Toggle sidebar
+        document.getElementById('sidebar-toggle').addEventListener('click', function() {
+            const sidebar = document.getElementById('sidebar');
+            sidebar.classList.toggle('hidden');
+        });
+        
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            createFog();
+            
+            // Add smoke effect
+            setInterval(() => {
+                const smoke1 = document.getElementById('smoke-1');
+                const smoke2 = document.getElementById('smoke-2');
+                const smoke3 = document.getElementById('smoke-3');
+                
+                smoke1.style.animation = 'none';
+                smoke2.style.animation = 'none';
+                smoke3.style.animation = 'none';
+                
+                setTimeout(() => {
+                    smoke1.style.animation = 'smoke 3s linear infinite';
+                    smoke2.style.animation = 'smoke 3s linear infinite 0.5s';
+                    smoke3.style.animation = 'smoke 3s linear infinite 1s';
+                }, 10);
+            }, 3000);
+            
+            // Add glow effect to buttons on hover
+            const buttons = document.querySelectorAll('.glow-on-hover');
+            buttons.forEach(button => {
+                button.addEventListener('mouseenter', () => {
+                    button.classList.add('shadow-lg', 'shadow-blue-500/50');
+                });
+                button.addEventListener('mouseleave', () => {
+                    button.classList.remove('shadow-lg', 'shadow-blue-500/50');
+                });
+            });
+            
+            // Add card hover effect
+            const cards = document.querySelectorAll('.card-glow');
+            cards.forEach(card => {
+                card.addEventListener('mouseenter', () => {
+                    card.classList.add('shadow-xl');
+                });
+                card.addEventListener('mouseleave', () => {
+                    card.classList.remove('shadow-xl');
+                });
+            });
+        });
+    </script>
+</body>
+</html>
+
+
